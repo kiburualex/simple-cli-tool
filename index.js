@@ -4,20 +4,12 @@ const chalk = require('chalk');
 
 console.log(chalk.blue('Snippet!'));
 
-// var figlet = require('figlet');
-
-// figlet('Snippet Application', function(err, data) {
-//     if (err) {
-//         return;
-//     }
-//     console.log(data)
-// });
-
+var fs = require('fs');
+var ProgressBar = require('progress');
 var request = require('superagent');
 var co = require('co');
 var prompt = require('co-prompt');
 var program = require('commander');
-
 
 program
 	.arguments('<file>')
@@ -27,13 +19,25 @@ program
 			var username = yield prompt('username : ');
 			var password = yield prompt.password('password : ');
 
-			console.log('user: %s pass: %s file: %s',
-			username, password, file);
+			var fileSize = fs.statSync(file).size;
+			var fileStream = fs.createReadStream(file);
+
+			var barOpts = {
+				width : 20,
+				total : fileSize,
+				clear : true
+			}
+
+			var bar = new ProgressBar('Uploading [:bar] :percent :etas', barOpts);
+
+			fileStream.on('data', function(chunk){
+				bar.tick(chunk.length);
+			});
 
 			request
 				.post('https://api.bitbucket.org/2.0/snippets/')
 				.auth(username, password)
-				.attach('file', file)
+				.attach('file', fileStream)
 				.set('Accept', 'application/json')
 				.end(function (err, res){
 					if(!err && res.ok){
