@@ -36,8 +36,22 @@ program
 				.attach('file', file)
 				.set('Accept', 'application/json')
 				.end(function (err, res){
-					var link = res.body.links.html.href;
-					console.log(chalk.green('Snippet created : %s', link));
+					if(!err && res.ok){
+						var link = res.body.links.html.href;
+						console.log(chalk.green('Snippet created : %s', link));
+					}
+
+					var errorMessage;
+					if(res  && res.status === 401){
+						errorMessage = "Authenication failed! Bad username/ password";
+					} else if(err) {
+						errorMessage = err;
+					}
+					else{
+						errorMessage = res.text;
+					}
+					console.error(chalk.red(errorMessage));
+					process.exit(1);
 				})
 		});
 	})
