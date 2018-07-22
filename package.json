@@ -1,0 +1,23 @@
+{
+  "name": "snippet",
+  "version": "1.0.0",
+  "description": "Command line tool for creating sort of snippet",
+  "main": "index.js",
+  "bin": {
+    "snippet": "./index.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "Marete Kent <maretekent@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "ascii-art": "^1.4.3",
+    "chalk": "^2.4.1",
+    "co": "^4.6.0",
+    "co-prompt": "^1.0.0",
+    "commander": "^2.16.0",
+    "figlet": "^1.2.0"
+  }
+}
