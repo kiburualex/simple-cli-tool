@@ -38,7 +38,7 @@ program
 				.end(function (err, res){
 					if(!err && res.ok){
 						var link = res.body.links.html.href;
-						console.log(chalk.green('Snippet created : %s', link));
+						console.log(chalk.bold.cyan('Snippet created: ', link));
 					}
 
 					var errorMessage;
