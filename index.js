@@ -19,6 +19,17 @@ program
 			var username = yield prompt('username : ');
 			var password = yield prompt.password('password : ');
 
+			var fileContents;
+			try {
+			  fileContents = fs.readFileSync(file);
+			} catch (err) {
+				if (err.code === 'ENOENT') {
+				  console.log(chalk.bold.red('File not found!'));
+				} else {
+				  throw err;
+				}
+			}
+
 			var fileSize = fs.statSync(file).size;
 			var fileStream = fs.createReadStream(file);
 
