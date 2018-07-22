@@ -21,29 +21,33 @@ program
 
 			var fileContents;
 			try {
-			  fileContents = fs.readFileSync(file);
+
+			  	fileContents = fs.readFileSync(file);
+
+			  	var fileSize = fs.statSync(file).size;
+
+				var fileStream = fs.createReadStream(file);
+
+				var barOpts = {
+					width : 20,
+					total : fileSize,
+					clear : true
+				}
+
+				var bar = new ProgressBar('Uploading [:bar] :percent :etas', barOpts);
+
+				fileStream.on('data', function(chunk){
+					bar.tick(chunk.length);
+				});
+
 			} catch (err) {
 				if (err.code === 'ENOENT') {
-				  console.log(chalk.bold.red('File not found!'));
+				  console.log(chalk.bold.red('File not found!', file));
 				} else {
 				  throw err;
 				}
+				process.exit(1);
 			}
-
-			var fileSize = fs.statSync(file).size;
-			var fileStream = fs.createReadStream(file);
-
-			var barOpts = {
-				width : 20,
-				total : fileSize,
-				clear : true
-			}
-
-			var bar = new ProgressBar('Uploading [:bar] :percent :etas', barOpts);
-
-			fileStream.on('data', function(chunk){
-				bar.tick(chunk.length);
-			});
 
 			request
 				.post('https://api.bitbucket.org/2.0/snippets/')
